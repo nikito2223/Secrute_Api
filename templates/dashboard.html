@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель доступа</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+
+<div class="max-w-3xl mx-auto mt-10 bg-white shadow-lg rounded-xl p-6">
+    <h2 class="text-2xl font-bold mb-4">Панель управления: <span class="text-blue-600">{{ username }}</span></h2>
+
+    <div class="mb-6">
+        <label class="font-semibold">API-ключ:</label>
+        <div class="bg-gray-100 border rounded p-2 text-sm text-gray-700 mt-1 select-all">
+            {{ api_key }}
+        </div>
+    </div>
+
+    <form method="post" class="space-y-4">
+        <div>
+            <label class="block font-semibold mb-1">Название программы:</label>
+            <input name="program" class="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300" placeholder="MyAppName">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="enabled" class="form-checkbox h-5 w-5 text-blue-600">
+                <span>Включить доступ</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="io_secrute" class="form-checkbox h-5 w-5 text-blue-600">
+                <span>io_secrute</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="file_system" class="form-checkbox h-5 w-5 text-blue-600">
+                <span>file_system</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="net_control" class="form-checkbox h-5 w-5 text-blue-600">
+                <span>net_control</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" name="Secrute" class="form-checkbox h-5 w-5 text-blue-600">
+                <span>Secrute</span>
+            </label>
+        </div>
+
+        <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+            Сохранить настройки
+        </button>
+    </form>
+
+    <hr class="my-6">
+
+    <h3 class="text-xl font-semibold mb-2">Программы и доступы:</h3>
+    {% for prog, enabled in programs %}
+        <div class="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="font-bold text-lg">{{ prog }}</span>
+                    <span class="ml-2 text-sm px-2 py-1 rounded-full {{ 'bg-green-200 text-green-800' if enabled else 'bg-red-200 text-red-800' }}">
+                        {{ "ВКЛЮЧЕН" if enabled else "ОТКЛЮЧЕН" }}
+                    </span>
+                </div>
+                <div class="space-x-2">
+                    <form method="post" class="inline">
+                        <input type="hidden" name="action" value="toggle_access">
+                        <input type="hidden" name="program" value="{{ prog }}">
+                        <button class="text-sm px-3 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-white">
+                            {{ "Отключить" if enabled else "Включить" }}
+                        </button>
+                    </form>
+
+                    <form method="post" class="inline">
+                        <input type="hidden" name="action" value="rename_program">
+                        <input type="hidden" name="program" value="{{ prog }}">
+                        <input type="text" name="new_name" placeholder="Новое имя" class="px-2 py-1 border rounded text-sm" required>
+                        <button class="text-sm px-2 py-1 rounded bg-indigo-500 hover:bg-indigo-600 text-white">
+                            Переименовать
+                        </button>
+                    </form>
+
+                    <form method="post" class="inline" onsubmit="return confirm('Удалить программу {{ prog }}?');">
+                        <input type="hidden" name="action" value="delete_program">
+                        <input type="hidden" name="program" value="{{ prog }}">
+                        <button class="text-sm px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white">
+                            Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <ul class="ml-4 mt-2 list-disc text-sm text-gray-700">
+                {% for flag, val in program_flags[prog].items() %}
+                    <li>{{ flag }}: 
+                        <span class="{{ 'text-green-600' if val else 'text-red-600' }}">
+                            {{ "✅" if val else "❌" }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
