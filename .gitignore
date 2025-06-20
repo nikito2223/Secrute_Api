@@ -1,0 +1,7 @@
+__pycache__/
+kbsCompile/__pycache__/
+
+.env
+db.sqlite3
+templates/db.sqlite3
+kbsCompile/boot_key.kbs

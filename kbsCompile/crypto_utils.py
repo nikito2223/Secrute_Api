@@ -1,13 +1,27 @@
+import os
 from cryptography.fernet import Fernet
+from dotenv import load_dotenv
 
-# Генерация ключа — делайте один раз и храните отдельно
-# key = Fernet.generate_key()
-key = b'HFje9E2E4_aQeRH0o7_gkSJovb2tK5It1tLYcCa_3X4='  # <-- замените своим ключом
+# Путь к корневой директории проекта (относительно /kbsCompile)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ENV_PATH = os.path.join(BASE_DIR, ".env")
 
-fernet = Fernet(key)
+# Загружаем .env
+load_dotenv(dotenv_path=ENV_PATH)
 
-def encrypt_data(data: bytes) -> bytes:
-    return fernet.encrypt(data)
+# Получаем ключ
+FERNET_KEY = os.getenv("FERNET_KEY")
+if not FERNET_KEY:
+    raise ValueError("FERNET_KEY не найден в .env")
 
-def decrypt_data(token: bytes) -> bytes:
-    return fernet.decrypt(token)
+# Инициализируем шифратор
+cipher = Fernet(FERNET_KEY)
+
+
+# ✅ Функции шифрования / дешифрования
+def encrypt_data(data: str) -> bytes:
+    return cipher.encrypt(data.encode())
+
+
+def decrypt_data(data: bytes) -> str:
+    return cipher.decrypt(data).decode()

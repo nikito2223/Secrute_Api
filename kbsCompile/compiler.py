@@ -24,7 +24,8 @@ def compile_kbs(api_key):
             }
             result[program]["flags"]["x_secrute"] = True  # всегда по умолчанию
 
-        encrypted = encrypt_data(json.dumps(result).encode())
+        encrypted = encrypt_data(json.dumps(result))  # encode() убран
+
         with open("boot_key.kbs", "wb") as f:
             f.write(encrypted)
         print("Файл boot_key.kbs создан.")
