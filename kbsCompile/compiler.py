@@ -31,4 +31,4 @@ def compile_kbs(api_key):
         print("Файл boot_key.kbs создан.")
 
 if __name__ == "__main__":
-    compile_kbs("6a41fd2e-42ce-4a32-a5e1-e9c7b9459173")
+    compile_kbs("YOUR-API-USERS")
